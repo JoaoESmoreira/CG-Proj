@@ -122,17 +122,17 @@ void drawCube() {
 
 void draw() {
 
-  // glTranslated(2.5 + xCarTrans, 1, 1);
+   // glTranslated(2.5 + xCarTrans, 1, 1);
 
-  glTranslated(0 + xCarTrans, 0, 0);
-
+    glTranslated(0 + xCarTrans, 0, 0);
+    GLfloat y = -0.5;
   // car
   glPushMatrix();
 
     // chemney
     glPushMatrix();
       glTranslated(1, yChimTrans, 0.5);
-      glScaled(0.1, 1, 0.1);
+     glScaled(0.1, 0.9, 0.1);
       drawCube();
     glPopMatrix();
 
@@ -140,44 +140,44 @@ void draw() {
     glPushMatrix();
       glScalef(3, 1, 1);
       glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(RED);
+      glColor4f(ORANGE);
       drawCube();
     glPopMatrix();
 
     // wheel
     glPushMatrix();
-      glTranslated(1.25, 0, 1.5);
+      glTranslated(1.25, y, 1.5);
       glRotated(angWheel, 0, 0, 1);
       glScalef(0.75, 0.75, 0.5);
       glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(GREEN);
+      glColor4f(YELLOW);
       drawCube();
     glPopMatrix();
     // wheel
     glPushMatrix();
-      glTranslated(1.25, 0, -1.5);
+      glTranslated(1.25, y, -1.5);
       glRotated(angWheel, 0, 0, 1);
       glScalef(0.75, 0.75, 0.5);
       glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(GREEN);
+      glColor4f(YELLOW);
       drawCube();
     glPopMatrix();
     // wheel
     glPushMatrix();
-      glTranslated(-1.25, 0, 1.5);
+      glTranslated(-1.25, y, 1.5);
       glRotated(angWheel, 0, 0, 1);
       glScalef(0.75, 0.75, 0.5);
       glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(GREEN);
+      glColor4f(YELLOW);
       drawCube();
     glPopMatrix();
     // wheel
     glPushMatrix();
-      glTranslated(-1.25, 0, -1.5);
+      glTranslated(-1.25, y, -1.5);
       glRotated(angWheel, 0, 0, 1);
       glScalef(0.75, 0.75, 0.5);
       glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(GREEN);
+      glColor4f(YELLOW);
       drawCube();
     glPopMatrix();
 
@@ -189,6 +189,22 @@ void draw() {
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+	glViewport(0,0, 300, 300);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective( 85, (float)height / width, 0.1, 9999);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+
+	gluLookAt(0,10,0, 0, 0, 0, -1, 0, 0);
+	
+
+	drawAxis();
+	draw();
+
+	glViewport(300, 300, width-300, height-300);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective( 85, (float)height / width, 0.1, 9999);
@@ -199,10 +215,9 @@ void display(void) {
 
 	gluLookAt(PersonPosition[0], PersonPosition[1], PersonPosition[2], 0, 0, 0, 0, 1, 0);
 	
-	// Objectos
+
 	drawAxis();
 	draw();
-
 
 
 	glutSwapBuffers();
@@ -234,14 +249,14 @@ void keyboard(unsigned char key, int x, int y) {
 
   case 'a':
   case 'A':
-      yAngPersonPosition -= 1;
+      yAngPersonPosition += 1;
       PersonPosition[0] = SIZE * cos(yAngPersonPosition/(2*PI));
       PersonPosition[2] = SIZE * sin(yAngPersonPosition/(2*PI));
     break;
 
   case 'd':
   case 'D':
-      yAngPersonPosition += 1;
+      yAngPersonPosition -= 1;
       PersonPosition[0] = SIZE * cos(yAngPersonPosition/(2*PI));
       PersonPosition[2] = SIZE * sin(yAngPersonPosition/(2*PI));
     break;

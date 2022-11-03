@@ -204,7 +204,7 @@ void display(void) {
 	drawAxis();
 	draw();
 
-	glViewport(300, 300, width-300, height-300);
+	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective( 85, (float)height / width, 0.1, 9999);

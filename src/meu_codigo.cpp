@@ -138,7 +138,7 @@ void draw() {
 
     // body car
     glPushMatrix();
-      glScalef(3, 1, 1);
+      glScalef(2, 1.2, 1);
       glDisableClientState(GL_COLOR_ARRAY);
       glColor4f(ORANGE);
       drawCube();
@@ -249,28 +249,58 @@ void keyboard(unsigned char key, int x, int y) {
 
   case 'a':
   case 'A':
-      yAngPersonPosition += 1;
-      PersonPosition[0] = SIZE * cos(yAngPersonPosition/(2*PI));
-      PersonPosition[2] = SIZE * sin(yAngPersonPosition/(2*PI));
+      yAngPersonPosition += 3;
+      PersonPosition[0] = SIZE * cos((PI*yAngPersonPosition)/(180));
+      PersonPosition[2] = SIZE * sin((PI*yAngPersonPosition)/(180));
     break;
 
   case 'd':
   case 'D':
-      yAngPersonPosition -= 1;
-      PersonPosition[0] = SIZE * cos(yAngPersonPosition/(2*PI));
-      PersonPosition[2] = SIZE * sin(yAngPersonPosition/(2*PI));
+      yAngPersonPosition -= 3;
+      PersonPosition[0] = SIZE * cos((PI*yAngPersonPosition)/(180));
+      PersonPosition[2] = SIZE * sin((PI*yAngPersonPosition)/(180));
     break;
 
   case 'w':
   case 'W':
-      AngPersonPosition += 1;
-      PersonPosition[1] = SIZE * sin(AngPersonPosition/(2*PI));
+      AngPersonPosition += 3;
+      PersonPosition[1] = SIZE * sin((PI*AngPersonPosition)/(180));
       break;
 
   case 's':
   case 'S':
-      AngPersonPosition -= 1;
-      PersonPosition[1] = SIZE * sin(AngPersonPosition/(2*PI));
+      AngPersonPosition -= 3;
+      PersonPosition[1] = SIZE * sin((PI*AngPersonPosition)/(180));
+      break;
+
+      // position of camera
+  case '1':
+      // x direction
+      PersonPosition[0] = SIZE;
+      PersonPosition[1] = 1;
+      PersonPosition[2] = 0;
+      yAngPersonPosition = AngPersonPosition = 0;
+      break;
+  case '2':
+      // y direction
+      PersonPosition[0] = 0;
+      PersonPosition[1] = 1;
+      PersonPosition[2] = SIZE;
+      yAngPersonPosition = 90; AngPersonPosition = 0;
+      break;
+  case '3':
+      // x direction
+      PersonPosition[0] = -SIZE;
+      PersonPosition[1] = 1;
+      PersonPosition[2] = 0;
+      yAngPersonPosition = 180; AngPersonPosition = 0;
+      break;
+  case '4':
+      // y direction
+      PersonPosition[0] = 0;
+      PersonPosition[1] = 1;
+      PersonPosition[2] = -SIZE;
+      yAngPersonPosition = 270; AngPersonPosition = 0;
       break;
 
   case 27:

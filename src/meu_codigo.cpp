@@ -7,9 +7,13 @@
 
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
+#include <GL/glext.h>
 #include <GL/glut.h>
 #include <cmath>
 #include <iostream>
+#include <iterator>
+#include "RgbImage.h"
+
 
 using namespace std;
 
@@ -77,6 +81,7 @@ static GLfloat color[] = {
 };
 
 
+
 GLfloat PersonPosition[3];
 GLfloat yAngPersonPosition;  // angle arround yy
 GLfloat AngPersonPosition;  // angle arround yy
@@ -89,7 +94,52 @@ static GLuint  LEFT[] = { 4, 5, 6, 7 };
 static GLuint RIGHT[] = { 8, 9, 10, 11 };
 static GLuint FRONT[] = { 12, 13, 14, 15 };
 static GLuint  BACK[] = { 16, 17, 18, 19 };
-static GLuint  DONW[] = { 20, 21, 22, 23 };
+static GLuint DONW[] = {20, 21, 22, 23};
+
+static GLfloat texturas[] = {
+    0, 0, 
+    1, 0, 
+    1, 1, 
+    0, 1,
+
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1,
+
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1,
+
+    0, 0, 
+    1, 0, 
+    1, 1, 
+    0, 1,
+};
+
+GLuint texture[5];
+RgbImage imag;
+
+
+
+void initTexturas()
+{
+	//----------------------------------------- Chao - tapete
+	glGenTextures(1, &texture[0]);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	imag.LoadBmpFile("textures/pneu.bmp");
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3,
+		imag.GetNumCols(),
+		imag.GetNumRows(), 0, GL_RGB, GL_UNSIGNED_BYTE,
+		imag.ImageData());
+
+}
 
 void drawAxis()
 {
@@ -144,43 +194,48 @@ void draw() {
       drawCube();
     glPopMatrix();
 
-    // wheel
-    glPushMatrix();
-      glTranslated(1.25, y, 1.5);
-      glRotated(angWheel, 0, 0, 1);
-      glScalef(0.75, 0.75, 0.5);
-      glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(YELLOW);
-      drawCube();
-    glPopMatrix();
-    // wheel
-    glPushMatrix();
-      glTranslated(1.25, y, -1.5);
-      glRotated(angWheel, 0, 0, 1);
-      glScalef(0.75, 0.75, 0.5);
-      glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(YELLOW);
-      drawCube();
-    glPopMatrix();
-    // wheel
-    glPushMatrix();
-      glTranslated(-1.25, y, 1.5);
-      glRotated(angWheel, 0, 0, 1);
-      glScalef(0.75, 0.75, 0.5);
-      glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(YELLOW);
-      drawCube();
-    glPopMatrix();
-    // wheel
-    glPushMatrix();
-      glTranslated(-1.25, y, -1.5);
-      glRotated(angWheel, 0, 0, 1);
-      glScalef(0.75, 0.75, 0.5);
-      glDisableClientState(GL_COLOR_ARRAY);
-      glColor4f(YELLOW);
-      drawCube();
-    glPopMatrix();
 
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+      // wheel
+      glPushMatrix();
+        glTranslated(1.25, y, 1.5);
+        glRotated(angWheel, 0, 0, 1);
+        glScalef(0.75, 0.75, 0.5);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glColor4f(YELLOW);
+        drawCube();
+      glPopMatrix();
+      // wheel
+      glPushMatrix();
+        glTranslated(1.25, y, -1.5);
+        glRotated(angWheel, 0, 0, 1);
+        glScalef(0.75, 0.75, 0.5);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glColor4f(YELLOW);
+        drawCube();
+      glPopMatrix();
+      // wheel
+      glPushMatrix();
+        glTranslated(-1.25, y, 1.5);
+        glRotated(angWheel, 0, 0, 1);
+        glScalef(0.75, 0.75, 0.5);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glColor4f(YELLOW);
+        drawCube();
+      glPopMatrix();
+      // wheel
+      glPushMatrix();
+        glTranslated(-1.25, y, -1.5);
+        glRotated(angWheel, 0, 0, 1);
+        glScalef(0.75, 0.75, 0.5);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glColor4f(YELLOW);
+        drawCube();
+      glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
 
   glPopMatrix();
 
@@ -236,6 +291,9 @@ void init(void) {
   glEnableClientState(GL_VERTEX_ARRAY);
   glColorPointer(4, GL_FLOAT, 0, color);
   glEnableClientState(GL_COLOR_ARRAY);
+  glTexCoordPointer(2, GL_FLOAT, 0, texturas);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 
 
   xCarTrans = yChimTrans = angWheel = yAngPersonPosition = AngPersonPosition = 0;
@@ -324,8 +382,9 @@ void teclasNotAscii(int key, int x, int y) {
     yChimTrans -= 0.2;
   }
 	
-	glutPostRedisplay();
+  glutPostRedisplay();
 }
+
 
 int main(int argc, char** argv) {
   glutInit(&argc, argv);
@@ -335,6 +394,7 @@ int main(int argc, char** argv) {
   glutCreateWindow("My car project");
 
   init();
+  initTexturas();
 
   glutSpecialFunc(teclasNotAscii);
   glutDisplayFunc(display);

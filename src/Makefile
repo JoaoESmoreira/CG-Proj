@@ -1,6 +1,6 @@
 
 CC = g++
-OBJS = meu_codigo.o RgbImage.o
+OBJS = meu_codigo.o RgbImage.o materiais.o
 FLAG = -lglut -lGLU -lGL
 
 prog:	run

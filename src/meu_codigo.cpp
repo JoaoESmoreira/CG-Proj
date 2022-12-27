@@ -69,6 +69,38 @@ static GLfloat vertex[] = {
     -tam, -tam, tam,  // 23
 };
 
+static GLfloat normals[] {
+  0,1,0,
+  0,1,0,
+  0,1,0,
+  0,1,0,
+
+  -1,0,0,
+  -1,0,0,
+  -1,0,0,
+  -1,0,0,
+
+  1,0,0,
+  1,0,0,
+  1,0,0,
+  1,0,0,
+
+  0,0,1,
+  0,0,1,
+  0,0,1,
+  0,0,1,
+
+  0,0,-1,
+  0,0,-1,
+  0,0,-1,
+  0,0,-1,
+
+  0,-1,0,
+  0,-1,0,
+  0,-1,0,
+  0,-1,0,
+};
+
 static GLfloat color[] = {
 
   GRAY, GRAY, GRAY, GRAY, 
@@ -105,6 +137,16 @@ static GLfloat texturas[] = {
     0, 0,
     1, 0,
     1, 1,
+    0, 1,
+
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1,
+
+    0, 0, 
+    1, 0, 
+    1, 1, 
     0, 1,
 
     0, 0,
@@ -172,7 +214,6 @@ void drawCube() {
 
 void draw() {
 
-   // glTranslated(2.5 + xCarTrans, 1, 1);
 
     glTranslated(0 + xCarTrans, 0, 0);
     GLfloat y = -0.5;
@@ -290,6 +331,7 @@ void init(void) {
   glVertexPointer(3, GL_FLOAT, 0, vertex);
   glEnableClientState(GL_VERTEX_ARRAY);
   glColorPointer(4, GL_FLOAT, 0, color);
+  glNormalPointer(GL_FLOAT, 0, normals);
   glEnableClientState(GL_COLOR_ARRAY);
   glTexCoordPointer(2, GL_FLOAT, 0, texturas);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);

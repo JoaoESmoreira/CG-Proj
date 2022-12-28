@@ -175,7 +175,7 @@ GLint   luzR = 1;		 	 //:::   'R'
 GLint   luzG = 1;			 //:::   'G'  
 GLint   luzB = 1;			 //:::   'B'  
 GLfloat localPos[4] = { 0.0, 5.0, 0.0, 1.0 };
-GLfloat localCorAmb[4] = { 0, 0, 0, 0.0 };
+GLfloat localCorAmb[4] = { 0, 5, 0, 0.0 };
 GLfloat localCorDif[4] = { luzR, luzG, luzB, 1.0 };
 GLfloat localCorEsp[4] = { luzR, luzG, luzB, 1.0 };
 GLint   material = 10;
@@ -225,15 +225,13 @@ void updateLuz() {
 	localCorDif[2] = luzB * intensidadeT;
 	localCorEsp[0] = luzR * intensidadeT;
 	localCorEsp[1] = luzG * intensidadeT;
-	localCorEsp[2] = luzB * intensidadeT;;
+	localCorEsp[2] = luzB * intensidadeT;
 	glLightfv(GL_LIGHT0, GL_AMBIENT, localCorAmb);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, localCorDif);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, localCorEsp);
 }
 
-void drawAxis()
-{
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Eixo
+void drawAxis() {
 	glColor4f(ORANGE);
 	glBegin(GL_LINES);
 		glVertex3f(0, 0, 0);
@@ -339,8 +337,6 @@ void desenhaTexto(char* string, GLfloat x1, GLfloat y1, GLfloat z1) {
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	sprintf(texto, "   %d%d%d - Luz 'RGB' ", luzR, luzG, luzB);
-	desenhaTexto(texto, 12, 1, 5);
 
 	glViewport(0,0, 300, 300);
 	glMatrixMode(GL_PROJECTION);
@@ -487,11 +483,14 @@ void keyboard(unsigned char key, int x, int y) {
 		updateLuz();
 		glutPostRedisplay();
 		break;
-
-		//--------------------------- MAterial
 	case 'm': case 'M':
 		material = (material + 1) % 18;
 		initMaterials(material);
+		glutPostRedisplay();
+		break;
+	case 't':case 'T':
+		ligaTeto = !ligaTeto;
+		updateLuz();
 		glutPostRedisplay();
 		break;
 

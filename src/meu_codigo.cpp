@@ -165,9 +165,145 @@ RgbImage imag;
 
 
 
-void initTexturas()
-{
-	//----------------------------------------- Chao - tapete
+void initMaterials(int material);
+int material;
+
+// Lights
+GLfloat intencity;
+GLfloat global_light[4];
+
+/*void updateLight() {
+
+  GLfloat pos[4] = {2, 5, 2, 1.0};
+  GLfloat dir[4] = {0, -1, 0, 0.0};
+  glLightfv(GL_LIGHT1, GL_POSITION, pos);
+  glLightfv(GL_LIGHT1, GL_POSITION, dir);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, global_light);
+}
+
+void initLight() {
+	glEnable(GL_LIGHTING);
+  //glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHT1);
+
+
+  intencity = 1.0;
+
+  global_light[0] = intencity;
+  global_light[1] = intencity;
+  global_light[2] = intencity;
+  global_light[3] = 1.0;
+  updateLight();
+}*/
+// Light Bulb - GL_LIGHT0
+bool light_bulb_on = false;
+GLfloat light_bulb_intensity = 1;
+GLfloat light_bulb_r = 0.5f, light_bulb_g = 0.5f, light_bulb_b = 0.5f;
+
+GLfloat light_bulb_position[4] = {4.0f, 7.0f, 10.0f, 1.0f};
+GLfloat light_bulb_ambient[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat light_bulb_specular[4] = {light_bulb_r, light_bulb_g, light_bulb_b, 1.0f};
+GLfloat light_bulb_difuse[4] = {light_bulb_r, light_bulb_g, light_bulb_b, 1.0f};
+
+// Spot Light - GL_LIGHT1
+bool spotlight_on = false;
+GLfloat spotlight_intensity = 1;
+GLfloat spotlight_r = 0.5, spotlight_g = 0.5, spotlight_b = 0.5;
+
+GLfloat spotlight_position[4] = {4.0f, 7.0f, -10.0f, 1.0f};
+GLfloat spotlight_direction[4] = {0.0f, 0.0f, 1.0f, 0.0f};
+
+GLfloat spotlight_ambient[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat spotlight_difuse[4] = {spotlight_r, spotlight_g, spotlight_b, 1.0f};
+GLfloat spotlight_specular[4] = {spotlight_r, spotlight_g, spotlight_b, 1.0f};
+
+GLfloat spot_cutoff = 15;
+GLfloat spot_exponent = 2;
+
+GLfloat spotlight_kc = 0.2;
+GLfloat spotlight_kl = 0.05f;
+GLfloat spotlight_kq = 0.0f;
+
+GLfloat ks = 0.25;
+bool use_grid = true;
+void update_light(GLenum light) {
+
+    switch (light) {
+        case GL_LIGHT0: {
+
+            light_bulb_ambient[0] = light_bulb_r * light_bulb_intensity;
+            light_bulb_ambient[1] = light_bulb_g * light_bulb_intensity;
+            light_bulb_ambient[2] = light_bulb_b * light_bulb_intensity;
+
+            light_bulb_specular[0] = light_bulb_r * light_bulb_intensity;
+            light_bulb_specular[1] = light_bulb_g * light_bulb_intensity;
+            light_bulb_specular[2] = light_bulb_b * light_bulb_intensity;
+
+            light_bulb_difuse[0] = light_bulb_r * light_bulb_intensity;
+            light_bulb_difuse[1] = light_bulb_g * light_bulb_intensity;
+            light_bulb_difuse[2] = light_bulb_b * light_bulb_intensity;
+
+            glLightfv(GL_LIGHT0, GL_POSITION, light_bulb_position);
+            glLightfv(GL_LIGHT0, GL_AMBIENT, light_bulb_ambient);
+            glLightfv(GL_LIGHT0, GL_DIFFUSE, light_bulb_difuse);
+            glLightfv(GL_LIGHT0, GL_SPECULAR, light_bulb_specular);
+
+            glDisable(GL_LIGHTING);
+            glPushMatrix();
+            {
+                glColor3f(light_bulb_r, light_bulb_g, light_bulb_b);
+                glTranslatef(light_bulb_position[0], light_bulb_position[1], light_bulb_position[2]);
+                glutSolidSphere(0.5f, 100, 100);
+            }
+            glPopMatrix();
+            glEnable(GL_LIGHTING);
+
+            if (light_bulb_on)
+                glDisable(GL_LIGHT0);
+            else
+                glEnable(GL_LIGHT0);
+            break;
+        }
+
+        case GL_LIGHT1: {
+            // Spot Light
+            glLightfv(GL_LIGHT1, GL_POSITION, (const GLfloat *)spotlight_position);
+            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, (const GLfloat *)spotlight_direction);
+
+            glLightfv(GL_LIGHT1, GL_AMBIENT, spotlight_ambient);
+            glLightfv(GL_LIGHT1, GL_DIFFUSE, spotlight_difuse);
+            glLightfv(GL_LIGHT1, GL_SPECULAR, spotlight_specular);
+
+            glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spot_cutoff);
+            glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spot_exponent);
+
+            glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, spotlight_kc);
+            glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, spotlight_kl);
+            glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, spotlight_kq);
+
+            glDisable(GL_LIGHTING);
+            glPushMatrix();
+            {
+                glColor3f(spotlight_r, spotlight_g, spotlight_b);
+                glTranslatef(spotlight_position[0], spotlight_position[1], spotlight_position[2]);
+                glutSolidSphere(0.5f, 100, 100);
+            }
+            glPopMatrix();
+            glEnable(GL_LIGHTING);
+
+            if (spotlight_on)
+                glDisable(GL_LIGHT1);
+            else
+                glEnable(GL_LIGHT1);
+            break;
+        }
+    }
+}
+
+
+
+
+void initTexturas() {
 	glGenTextures(1, &texture[0]);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	imag.LoadBmpFile("textures/pneu.bmp");
@@ -180,12 +316,9 @@ void initTexturas()
 		imag.GetNumCols(),
 		imag.GetNumRows(), 0, GL_RGB, GL_UNSIGNED_BYTE,
 		imag.ImageData());
-
 }
 
-void drawAxis()
-{
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Eixo
+void drawAxis() {
 	glColor4f(ORANGE);
 	glBegin(GL_LINES);
 		glVertex3f(0, 0, 0);
@@ -220,12 +353,6 @@ void draw() {
   // car
   glPushMatrix();
 
-    // chemney
-    glPushMatrix();
-      glTranslated(1, yChimTrans, 0.5);
-     glScaled(0.1, 0.9, 0.1);
-      drawCube();
-    glPopMatrix();
 
     // body car
     glPushMatrix();
@@ -277,6 +404,20 @@ void draw() {
       glPopMatrix();
 
     glDisable(GL_TEXTURE_2D);
+    // chemney
+    glColor4f(1, 1, 1, 0.4);
+    glEnable(GL_BLEND);
+    glEnable(GL_COLOR_MATERIAL);
+        glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glPushMatrix();
+      glTranslated(1, yChimTrans, 0.5);
+     glScaled(0.3, 0.9, 0.3);
+      drawCube();
+    glPopMatrix();
+    glDisable(GL_COLOR_MATERIAL);
+    glDisable(GL_BLEND);
+
 
   glPopMatrix();
 
@@ -299,6 +440,8 @@ void display(void) {
 
 	drawAxis();
 	draw();
+  update_light(GL_LIGHT0);
+  update_light(GL_LIGHT1);
 
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
@@ -314,7 +457,6 @@ void display(void) {
 
 	drawAxis();
 	draw();
-
 
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -342,6 +484,9 @@ void init(void) {
   PersonPosition[0] = SIZE * cos(yAngPersonPosition/(2*PI));
   PersonPosition[1] = SIZE * sin(AngPersonPosition/(2*PI));
   PersonPosition[2] = SIZE * sin(yAngPersonPosition/(2+PI));
+
+  material = 0;
+  initMaterials(material);
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -402,6 +547,90 @@ void keyboard(unsigned char key, int x, int y) {
       PersonPosition[2] = -SIZE;
       yAngPersonPosition = 270; AngPersonPosition = 0;
       break;
+	case 'm': case 'M':
+		material = (material + 1) % 18;
+		initMaterials(material);
+		glutPostRedisplay();
+		break;
+
+  // Spotlight ON/OFF
+  case 'N': case 'n':
+      spotlight_on = !spotlight_on;
+      break;
+  // Light Bulb ON/OFF
+  case 'B': case 'b':
+      light_bulb_on = !light_bulb_on;
+      break;
+      /*
+  // More Light Bulb Red Component
+  case 'Q': {
+      light_bulb_r += 0.5f;
+      break;
+  }
+
+  // Less Light Bulb Red Component
+  case 'z': {
+      light_bulb_r -= 0.5f;
+      break;
+  }
+
+  // More Light Bulb Green Component
+  case 'x': {
+      light_bulb_g += 0.5f;
+      break;
+  }
+
+  // Less Light Bulb Green Component
+  case 'c': {
+      light_bulb_g -= 0.5f;
+      break;
+  }
+
+  // More Light Bulb Blue Component
+  case 'v': {
+      light_bulb_b += 0.5f;
+      break;
+  }
+
+  // Less Light Bulb Blue Component
+  case 'b': {
+      light_bulb_b -= 0.5f;
+      break;
+  }
+
+  // More Light Bulb Intesity
+  case 'n': {
+      light_bulb_intensity += 0.1f;
+      break;
+  }
+
+  // Less Light Bulb Intesity
+  case 'm': {
+      light_bulb_intensity -= 0.1f;
+      break;
+  }*/
+
+  /*case 'o':
+  	glEnable(GL_LIGHT0);
+    break;
+  case 'p':
+    glDisable(GL_LIGHT0);
+    break;
+  case 'y':
+  	glEnable(GL_LIGHT1);
+    break;
+  case 'u':
+    glDisable(GL_LIGHT1);
+    break;*/
+  case 'i':
+      intencity += 0.1;
+      if (intencity > 1.1)
+        intencity = 0;
+      global_light[0] = intencity;
+      global_light[1] = intencity;
+      global_light[2] = intencity;
+      cout << intencity << endl;
+    break;
 
   case 27:
     exit(0);
@@ -437,6 +666,9 @@ int main(int argc, char** argv) {
 
   init();
   initTexturas();
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (const GLfloat[4]){0.2f, 0.2f, 0.2f, 0.2f});
+    update_light(GL_LIGHT0);
+    update_light(GL_LIGHT1);
 
   glutSpecialFunc(teclasNotAscii);
   glutDisplayFunc(display);

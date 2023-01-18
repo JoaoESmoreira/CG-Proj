@@ -168,34 +168,6 @@ RgbImage imag;
 void initMaterials(int material);
 int material;
 
-// Lights
-/*GLfloat intencity;
-GLfloat global_light[4];
-
-void updateLight() {
-
-  GLfloat pos[4] = {2, 5, 2, 1.0};
-  GLfloat dir[4] = {0, -1, 0, 0.0};
-  glLightfv(GL_LIGHT1, GL_POSITION, pos);
-  glLightfv(GL_LIGHT1, GL_POSITION, dir);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, global_light);
-}
-
-void initLight() {
-	glEnable(GL_LIGHTING);
-  //glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHT1);
-
-
-  intencity = 1.0;
-
-  global_light[0] = intencity;
-  global_light[1] = intencity;
-  global_light[2] = intencity;
-  global_light[3] = 1.0;
-  updateLight();
-}*/
-// Light Bulb - GL_LIGHT0
 bool light_bulb_on;
 GLfloat light_bulb_intensity = 1;
 GLfloat light_bulb_r = 0.5f, light_bulb_g = 0.5f, light_bulb_b = 0.5f;
@@ -574,6 +546,13 @@ void keyboard(unsigned char key, int x, int y) {
       else
 	  cout << "bulb activcated\n";
       break;
+  case 'H': case 'h':
+      spotlight_position[0] += 0.2;
+      break;
+  case 'L': case 'l':
+      spotlight_position[0] -= 0.2;
+      break;
+
       /*
   // More Light Bulb Red Component
   case 'Q': {

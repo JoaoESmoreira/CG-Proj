@@ -248,7 +248,7 @@ void update_light(GLenum light) {
             glLightfv(GL_LIGHT0, GL_DIFFUSE, light_bulb_difuse);
             glLightfv(GL_LIGHT0, GL_SPECULAR, light_bulb_specular);
 
-            /*glDisable(GL_LIGHTING);
+            glDisable(GL_LIGHTING);
             glPushMatrix();
             {
                 glColor3f(light_bulb_r, light_bulb_g, light_bulb_b);
@@ -256,7 +256,7 @@ void update_light(GLenum light) {
                 glutSolidSphere(0.5f, 100, 100);
             }
             glPopMatrix();
-            glEnable(GL_LIGHTING);*/
+            glEnable(GL_LIGHTING);
 
             if (light_bulb_on)
                 glDisable(GL_LIGHT0);
@@ -457,6 +457,8 @@ void display(void) {
 
 	drawAxis();
 	draw();
+  update_light(GL_LIGHT0);
+  update_light(GL_LIGHT1);
 
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -635,9 +637,12 @@ void keyboard(unsigned char key, int x, int y) {
     break;*/
   case 'i':
       light_bulb_intensity += 0.1;
-      if (light_bulb_intensity > 1.1)
-        light_bulb_intensity = 0;
-      cout << light_bulb_intensity << endl;
+      spotlight_intensity += 0.1;
+      if (light_bulb_intensity > 1.1) {
+	  spotlight_intensity = 0;
+	  light_bulb_intensity = 0;
+      } 
+      cout << "intencity: " << light_bulb_intensity << endl;
       
     break;
 

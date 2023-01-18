@@ -169,10 +169,10 @@ void initMaterials(int material);
 int material;
 
 // Lights
-GLfloat intencity;
+/*GLfloat intencity;
 GLfloat global_light[4];
 
-/*void updateLight() {
+void updateLight() {
 
   GLfloat pos[4] = {2, 5, 2, 1.0};
   GLfloat dir[4] = {0, -1, 0, 0.0};
@@ -196,22 +196,22 @@ void initLight() {
   updateLight();
 }*/
 // Light Bulb - GL_LIGHT0
-bool light_bulb_on = false;
+bool light_bulb_on;
 GLfloat light_bulb_intensity = 1;
 GLfloat light_bulb_r = 0.5f, light_bulb_g = 0.5f, light_bulb_b = 0.5f;
 
-GLfloat light_bulb_position[4] = {4.0f, 7.0f, 10.0f, 1.0f};
-GLfloat light_bulb_ambient[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat light_bulb_position[4] = {0.0f, 5.0f, 0.0f, 1.0f};
+GLfloat light_bulb_ambient[4] = {0.0f, -1.0f, 0.0f, 1.0f};
 GLfloat light_bulb_specular[4] = {light_bulb_r, light_bulb_g, light_bulb_b, 1.0f};
 GLfloat light_bulb_difuse[4] = {light_bulb_r, light_bulb_g, light_bulb_b, 1.0f};
 
 // Spot Light - GL_LIGHT1
-bool spotlight_on = false;
+bool spotlight_on;
 GLfloat spotlight_intensity = 1;
 GLfloat spotlight_r = 0.5, spotlight_g = 0.5, spotlight_b = 0.5;
 
-GLfloat spotlight_position[4] = {4.0f, 7.0f, -10.0f, 1.0f};
-GLfloat spotlight_direction[4] = {0.0f, 0.0f, 1.0f, 0.0f};
+GLfloat spotlight_position[4] = {0.0f, 5.0f, 0.0f, 1.0f};
+GLfloat spotlight_direction[4] = {0.0f, -1.0f, 0.0f, 0.0f};
 
 GLfloat spotlight_ambient[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 GLfloat spotlight_difuse[4] = {spotlight_r, spotlight_g, spotlight_b, 1.0f};
@@ -248,7 +248,7 @@ void update_light(GLenum light) {
             glLightfv(GL_LIGHT0, GL_DIFFUSE, light_bulb_difuse);
             glLightfv(GL_LIGHT0, GL_SPECULAR, light_bulb_specular);
 
-            glDisable(GL_LIGHTING);
+            /*glDisable(GL_LIGHTING);
             glPushMatrix();
             {
                 glColor3f(light_bulb_r, light_bulb_g, light_bulb_b);
@@ -256,7 +256,7 @@ void update_light(GLenum light) {
                 glutSolidSphere(0.5f, 100, 100);
             }
             glPopMatrix();
-            glEnable(GL_LIGHTING);
+            glEnable(GL_LIGHTING);*/
 
             if (light_bulb_on)
                 glDisable(GL_LIGHT0);
@@ -487,6 +487,9 @@ void init(void) {
 
   material = 0;
   initMaterials(material);
+
+
+  light_bulb_on = spotlight_on = false;
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -547,19 +550,27 @@ void keyboard(unsigned char key, int x, int y) {
       PersonPosition[2] = -SIZE;
       yAngPersonPosition = 270; AngPersonPosition = 0;
       break;
-	case 'm': case 'M':
-		material = (material + 1) % 18;
-		initMaterials(material);
-		glutPostRedisplay();
-		break;
+  case 'm': case 'M':
+      material = (material + 1) % 18;
+      initMaterials(material);
+      glutPostRedisplay();
+      break;
 
   // Spotlight ON/OFF
   case 'N': case 'n':
       spotlight_on = !spotlight_on;
+      if (spotlight_on)
+	  cout << "Sportlight desativated\n";
+      else
+	  cout << "Sportlight activcated\n";
       break;
   // Light Bulb ON/OFF
   case 'B': case 'b':
       light_bulb_on = !light_bulb_on;
+      if (light_bulb_on)
+	  cout << "bulb desativated\n";
+      else
+	  cout << "bulb activcated\n";
       break;
       /*
   // More Light Bulb Red Component
@@ -623,13 +634,11 @@ void keyboard(unsigned char key, int x, int y) {
     glDisable(GL_LIGHT1);
     break;*/
   case 'i':
-      intencity += 0.1;
-      if (intencity > 1.1)
-        intencity = 0;
-      global_light[0] = intencity;
-      global_light[1] = intencity;
-      global_light[2] = intencity;
-      cout << intencity << endl;
+      light_bulb_intensity += 0.1;
+      if (light_bulb_intensity > 1.1)
+        light_bulb_intensity = 0;
+      cout << light_bulb_intensity << endl;
+      
     break;
 
   case 27:

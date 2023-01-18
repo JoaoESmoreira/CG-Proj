@@ -531,7 +531,7 @@ void keyboard(unsigned char key, int x, int y) {
       break;
 
   // Spotlight ON/OFF
-  case 'N': case 'n':
+  case 'K': case 'k':
       spotlight_on = !spotlight_on;
       if (spotlight_on)
 	  cout << "Sportlight desativated\n";
@@ -539,7 +539,7 @@ void keyboard(unsigned char key, int x, int y) {
 	  cout << "Sportlight activcated\n";
       break;
   // Light Bulb ON/OFF
-  case 'B': case 'b':
+  case 'j': case 'J':
       light_bulb_on = !light_bulb_on;
       if (light_bulb_on)
 	  cout << "bulb desativated\n";
@@ -553,6 +553,27 @@ void keyboard(unsigned char key, int x, int y) {
       spotlight_position[0] -= 0.2;
       break;
 
+  case 'R': case 'r':
+      spotlight_r += 0.1;
+      if (spotlight_r > 1.1) {
+	  spotlight_r = 0;
+      }
+      cout << "red: " << spotlight_r << endl;
+      break;
+  case 'G': case 'g':
+      spotlight_g += 0.1;
+      if (spotlight_g > 1.1) {
+	  spotlight_g = 0;
+      }
+      cout << "green: " << spotlight_g << endl;
+      break;
+  case 'B': case 'b':
+      spotlight_b += 0.1;
+      if (spotlight_b > 1.1) {
+	  spotlight_b = 0;
+      }
+      cout << "blue: " << spotlight_b << endl;
+      break;
       /*
   // More Light Bulb Red Component
   case 'Q': {

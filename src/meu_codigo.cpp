@@ -292,7 +292,7 @@ void initTexturas() {
 	glGenTextures(1, &texture[0]);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	imag.LoadBmpFile("textures/pneu.bmp");
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -304,7 +304,7 @@ void initTexturas() {
 
 	glGenTextures(1, &texture[1]);
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
-	imag.LoadBmpFile("textures/skybox.bmp");
+	imag.LoadBmpFile("textures/try.bmp");
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -343,42 +343,35 @@ void drawCube() {
       glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, DONW);
 }
 
+bool malha;
+
 void draw() {
 
 
     glTranslated(0 + xCarTrans, 0, 0);
-    GLfloat y = -0.5;
-  // car
-  glPushMatrix();
 
+    GLfloat y = -0.5;
+    glPushMatrix();
 
     initMaterials(10);
-    int dim = 512;
+    int dim;
+    if (malha)
+	dim = 1024;
+    else
+	dim = 1;
+
     glPushMatrix();
-    glScalef(5,1,5);
+    glScalef(50, 1, 5);
     glTranslatef(-1, -1, -1);  //meio do poligono 
-    // glRotatef(0, 0, 45, 1);
-    // glNormal3f(0, 0, 1);          //normal 
-    float    med_dim = (float)dim / 2;
+    float med_dim = (float)dim / 2;
     glBegin(GL_QUADS);
     int i, j;
     for (i = 0; i < dim; i++)
         for (j = 0; j < dim; j++) {
-            // glTexCoord2f((float)j / dim, (float)i / dim);
-
             glVertex3d((float)j / med_dim, 0, (float)(i + 1) / med_dim);
             glVertex3d((float)(j + 1) / med_dim, 0, (float)(i + 1) / med_dim);
             glVertex3d((float)(j + 1) / med_dim, 0, (float)i / med_dim);
             glVertex3d((float)j / med_dim, 0, (float)i / med_dim);
-
-            // glTexCoord2f((float)(j + 1) / dim, (float)i / dim);
-
-
-            // glTexCoord2f((float)(j + 1) / dim, (float)(i + 1) / dim);
-
-
-            // glTexCoord2f((float)j / dim, (float)(i + 1) / dim);
-
         }
     glEnd();
     glPopMatrix();
@@ -399,7 +392,7 @@ void draw() {
     glPopMatrix();
 
 
-
+    // initMaterials(10);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[0]);
       // wheel
@@ -476,7 +469,7 @@ void display(void) {
 	gluLookAt(PersonPosition[0], PersonPosition[1], PersonPosition[2], 0, 0, 0, 0, 1, 0);
 	
 
-	// drawEsfera();
+	drawEsfera();
 
 	drawAxis();
 	draw();
@@ -509,8 +502,8 @@ void init(void) {
   glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
 
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
+  // glEnable(GL_CULL_FACE);
+  // glCullFace(GL_BACK);
 
   glVertexPointer(3, GL_FLOAT, 0, vertex);
   glEnableClientState(GL_VERTEX_ARRAY);
@@ -533,6 +526,8 @@ void init(void) {
 
   light_bulb_on = spotlight_on = false;
   light_bulb_r = 0.5f, light_bulb_g = 0.5f, light_bulb_b = 0.5f;
+
+  malha = true;
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -616,10 +611,10 @@ void keyboard(unsigned char key, int x, int y) {
 	  cout << "bulb activcated\n";
       break;
   case 'H': case 'h':
-      spotlight_position[0] += 0.2;
+      spotlight_position[0] -= 0.2;
       break;
   case 'L': case 'l':
-      spotlight_position[0] -= 0.2;
+      spotlight_position[0] += 0.2;
       break;
   case 'J': case 'j':
       spotlight_position[2] += 0.2;
@@ -648,6 +643,9 @@ void keyboard(unsigned char key, int x, int y) {
 	  light_bulb_b = 0;
       }
       cout << "blue: " << light_bulb_b << endl;
+      break;
+  case 'Y': case 'y':
+      malha = !malha;
       break;
       /*
   // More Light Bulb Red Component
@@ -708,6 +706,7 @@ void keyboard(unsigned char key, int x, int y) {
       cout << "intencity: " << light_bulb_intensity << endl;
       
     break;
+
 
   case 27:
     exit(0);

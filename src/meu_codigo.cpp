@@ -173,7 +173,7 @@ GLfloat light_bulb_intensity = 1;
 GLfloat light_bulb_r, light_bulb_g, light_bulb_b;
 
 GLfloat light_bulb_position[4] = {0.0f, 5.0f, 0.0f, 1.0f};
-GLfloat light_bulb_ambient[4] = {0.0f, -1.0f, 0.0f, 1.0f};
+GLfloat light_bulb_ambient[4] = {1.0f, 1.0f,  1.0f, 0.0f};
 GLfloat light_bulb_specular[4] = {light_bulb_r, light_bulb_g, light_bulb_b, 1.0f};
 GLfloat light_bulb_difuse[4] = {light_bulb_r, light_bulb_g, light_bulb_b, 1.0f};
 
@@ -189,8 +189,8 @@ GLfloat spotlight_ambient[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 GLfloat spotlight_difuse[4] = {spotlight_r, spotlight_g, spotlight_b, 1.0f};
 GLfloat spotlight_specular[4] = {spotlight_r, spotlight_g, spotlight_b, 1.0f};
 
-GLfloat spot_cutoff = 15;
-GLfloat spot_exponent = 2;
+GLfloat spot_cutoff = 20;
+GLfloat spot_exponent = 0;
 
 GLfloat spotlight_kc = 0.2;
 GLfloat spotlight_kl = 0.05f;
@@ -249,9 +249,9 @@ void update_light(GLenum light) {
             glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spot_cutoff);
             glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spot_exponent);
 
-            /*glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, spotlight_kl);
+            glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, spotlight_kl);
             glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, spotlight_kq);
-            glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, spotlight_kc);*/
+            glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, spotlight_kc);
 
             glDisable(GL_LIGHTING);
             glPushMatrix();
@@ -352,6 +352,44 @@ void draw() {
   glPushMatrix();
 
 
+    initMaterials(10);
+    int dim = 512;
+    glPushMatrix();
+    glScalef(5,1,5);
+    glTranslatef(-1, -1, -1);  //meio do poligono 
+    // glRotatef(0, 0, 45, 1);
+    // glNormal3f(0, 0, 1);          //normal 
+    float    med_dim = (float)dim / 2;
+    glBegin(GL_QUADS);
+    int i, j;
+    for (i = 0; i < dim; i++)
+        for (j = 0; j < dim; j++) {
+            // glTexCoord2f((float)j / dim, (float)i / dim);
+
+            glVertex3d((float)j / med_dim, 0, (float)(i + 1) / med_dim);
+            glVertex3d((float)(j + 1) / med_dim, 0, (float)(i + 1) / med_dim);
+            glVertex3d((float)(j + 1) / med_dim, 0, (float)i / med_dim);
+            glVertex3d((float)j / med_dim, 0, (float)i / med_dim);
+
+            // glTexCoord2f((float)(j + 1) / dim, (float)i / dim);
+
+
+            // glTexCoord2f((float)(j + 1) / dim, (float)(i + 1) / dim);
+
+
+            // glTexCoord2f((float)j / dim, (float)(i + 1) / dim);
+
+        }
+    glEnd();
+    glPopMatrix();
+
+
+    initMaterials(material);
+
+
+
+
+
     // body car
     glPushMatrix();
       glScalef(2, 1.2, 1);
@@ -417,15 +455,15 @@ void draw() {
     glDisable(GL_BLEND);
 
 
-  glPopMatrix();
 
+  glPopMatrix();
 }
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 
-	glViewport(0,0, 300, 300);
+	// glViewport(0,0, 300, 300);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective( 85, (float)height / width, 0.1, 9999);
@@ -434,16 +472,18 @@ void display(void) {
 	glLoadIdentity();
 
 
-	gluLookAt(0,10,0, 0, 0, 0, -1, 0, 0);
+	// gluLookAt(0,10,0, 0, 0, 0, -1, 0, 0);
+	gluLookAt(PersonPosition[0], PersonPosition[1], PersonPosition[2], 0, 0, 0, 0, 1, 0);
 	
 
-	drawEsfera();
+	// drawEsfera();
+
 	drawAxis();
 	draw();
-  update_light(GL_LIGHT0);
-  update_light(GL_LIGHT1);
+	update_light(GL_LIGHT0);
+	update_light(GL_LIGHT1);
 
-	glViewport(0, 0, width, height);
+	/*glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective( 85, (float)height / width, 0.1, 9999);
@@ -456,9 +496,9 @@ void display(void) {
 	
 
 	drawAxis();
-	draw();
-  update_light(GL_LIGHT0);
-  update_light(GL_LIGHT1);
+	draw();*/
+	// update_light(GL_LIGHT0);
+	// update_light(GL_LIGHT1);
 
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -489,6 +529,7 @@ void init(void) {
   material = 0;
   initMaterials(material);
 
+  glEnable(GL_NORMALIZE);
 
   light_bulb_on = spotlight_on = false;
   light_bulb_r = 0.5f, light_bulb_g = 0.5f, light_bulb_b = 0.5f;
@@ -559,7 +600,7 @@ void keyboard(unsigned char key, int x, int y) {
       break;
 
   // Spotlight ON/OFF
-  case 'K': case 'k':
+  case 'P': case 'p':
       spotlight_on = !spotlight_on;
       if (spotlight_on)
 	  cout << "Sportlight desativated\n";
@@ -567,7 +608,7 @@ void keyboard(unsigned char key, int x, int y) {
 	  cout << "Sportlight activcated\n";
       break;
   // Light Bulb ON/OFF
-  case 'j': case 'J':
+  case 'O': case 'o':
       light_bulb_on = !light_bulb_on;
       if (light_bulb_on)
 	  cout << "bulb desativated\n";
@@ -579,6 +620,12 @@ void keyboard(unsigned char key, int x, int y) {
       break;
   case 'L': case 'l':
       spotlight_position[0] -= 0.2;
+      break;
+  case 'J': case 'j':
+      spotlight_position[2] += 0.2;
+      break;
+  case 'K': case 'k':
+      spotlight_position[2] -= 0.2;
       break;
 
   case 'R': case 'r':
@@ -651,18 +698,6 @@ void keyboard(unsigned char key, int x, int y) {
       break;
   }*/
 
-  /*case 'o':
-  	glEnable(GL_LIGHT0);
-    break;
-  case 'p':
-    glDisable(GL_LIGHT0);
-    break;
-  case 'y':
-  	glEnable(GL_LIGHT1);
-    break;
-  case 'u':
-    glDisable(GL_LIGHT1);
-    break;*/
   case 'i':
       light_bulb_intensity += 0.1;
       spotlight_intensity += 0.1;

@@ -163,6 +163,42 @@ static GLfloat texturas[] = {
 GLuint texture[5];
 RgbImage imag;
 
+void initMaterials(int material);
+
+GLfloat intensidadeDia = 0.0;
+GLfloat luzGlobalCorAmb[4] = { intensidadeDia, intensidadeDia,intensidadeDia, 1.0 };   // 
+
+//---------------------------------------------------- Luz pontual no TETO (eixo Y)
+GLint   ligaTeto = 1;		 //:::   'T'  
+GLfloat intensidadeT = 0.3;  //:::   'I'  
+GLint   luzR = 1;		 	 //:::   'R'  
+GLint   luzG = 1;			 //:::   'G'  
+GLint   luzB = 1;			 //:::   'B'  
+GLfloat localPos[4] = { 0.0, 5.0, 0.0, 1.0 };
+GLfloat localCorAmb[4] = { 0, 5, 0, 0.0 };
+GLfloat localCorDif[4] = { luzR, luzG, luzB, 1.0 };
+GLfloat localCorEsp[4] = { luzR, luzG, luzB, 1.0 };
+GLint   material = 10;
+char texto[30];
+
+void initLights(void) {
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzGlobalCorAmb);
+	glLightfv(GL_LIGHT0, GL_POSITION, localPos);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, localCorAmb);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, localCorDif);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, localCorEsp);
+}
+
+void iluminacao() {
+	glLightfv(GL_LIGHT0, GL_POSITION, localPos);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, localCorAmb);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, localCorDif);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, localCorEsp);
+	if (ligaTeto)  
+		glEnable(GL_LIGHT0);
+	else   		  
+		glDisable(GL_LIGHT0);
+}
 
 
 void initMaterials(int material);
@@ -289,30 +325,20 @@ void drawEsfera() {
 }
 
 void initTexturas() {
-	glGenTextures(1, &texture[0]);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	imag.LoadBmpFile("textures/pneu.bmp");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3,
-		imag.GetNumCols(),
-		imag.GetNumRows(), 0, GL_RGB, GL_UNSIGNED_BYTE,
-		imag.ImageData());
 
-	glGenTextures(1, &texture[1]);
-	glBindTexture(GL_TEXTURE_2D, texture[1]);
-	imag.LoadBmpFile("textures/try.bmp");
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3,
-		imag.GetNumCols(),
-		imag.GetNumRows(), 0, GL_RGB, GL_UNSIGNED_BYTE,
-		imag.ImageData());
+void updateLuz() {
+	localCorAmb[0] = luzR * intensidadeT;
+	localCorAmb[1] = luzG * intensidadeT;
+	localCorAmb[2] = luzB * intensidadeT;
+	localCorDif[0] = luzR * intensidadeT;
+	localCorDif[1] = luzG * intensidadeT;
+	localCorDif[2] = luzB * intensidadeT;
+	localCorEsp[0] = luzR * intensidadeT;
+	localCorEsp[1] = luzG * intensidadeT;
+	localCorEsp[2] = luzB * intensidadeT;
+	glLightfv(GL_LIGHT0, GL_AMBIENT, localCorAmb);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, localCorDif);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, localCorEsp);
 }
 
 void drawAxis() {
@@ -451,11 +477,19 @@ void draw() {
   glPopMatrix();
 }
 
+void desenhaTexto(char* string, GLfloat x1, GLfloat y1, GLfloat z1) {
+	glRasterPos3f(x1, y1, z1);
+	while (*string)
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, *string++);
+}
+
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 
+
 	// glViewport(0,0, 300, 300);
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective( 85, (float)height / width, 0.1, 9999);
@@ -487,10 +521,13 @@ void display(void) {
 	gluLookAt(PersonPosition[0], PersonPosition[1], PersonPosition[2], 0, 0, 0, 0, 1, 0);
 	
 
+	glEnable(GL_LIGHTING);
 	drawAxis();
+
 	draw();*/
 	// update_light(GL_LIGHT0);
 	// update_light(GL_LIGHT1);
+
 
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -517,6 +554,7 @@ void init(void) {
   PersonPosition[0] = SIZE * cos(yAngPersonPosition/(2*PI));
   PersonPosition[1] = SIZE * sin(AngPersonPosition/(2*PI));
   PersonPosition[2] = SIZE * sin(yAngPersonPosition/(2+PI));
+
 
   material = 0;
   initMaterials(material);
@@ -587,6 +625,7 @@ void keyboard(unsigned char key, int x, int y) {
       PersonPosition[2] = -SIZE;
       yAngPersonPosition = 270; AngPersonPosition = 0;
       break;
+
   case 'm': case 'M':
       material = (material + 1) % 18;
       initMaterials(material);
@@ -655,9 +694,7 @@ void keyboard(unsigned char key, int x, int y) {
 	  light_bulb_intensity = 0;
       } 
       cout << "intencity: " << light_bulb_intensity << endl;
-      
     break;
-
 
   case 27:
     exit(0);
@@ -683,6 +720,12 @@ void teclasNotAscii(int key, int x, int y) {
   glutPostRedisplay();
 }
 
+// void initCube() {
+//     GLfloat difColor[] = { 1, 1, 1};
+
+//     glMaterialfv(GL_FRONT, GL_DIFFUSE, difColor);
+//     glMaterialf(GL_FRONT, GL_SHININESS, 2);
+// }
 
 int main(int argc, char** argv) {
   glutInit(&argc, argv);
@@ -693,9 +736,11 @@ int main(int argc, char** argv) {
 
   init();
   initTexturas();
+
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (const GLfloat[4]){0.2f, 0.2f, 0.2f, 0.2f});
     update_light(GL_LIGHT0);
     update_light(GL_LIGHT1);
+
 
   glutSpecialFunc(teclasNotAscii);
   glutDisplayFunc(display);

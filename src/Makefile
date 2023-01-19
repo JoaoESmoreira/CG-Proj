@@ -13,5 +13,8 @@ run:	${OBJS}
 clean:
 	rm a.out ${OBJS}
 
+zip:
+	zip project.zip *
+
 %.o:	%.c
 	$(CC) -c $^ $(FLAGS) 

@@ -391,9 +391,9 @@ void draw() {
       drawCube();
     glPopMatrix();
 
-    // initMaterials(10);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[0]);
+    initMaterials((material+1)%18);
       // wheel
       glPushMatrix();
         glTranslated(1.25, y, 1.5);
@@ -646,54 +646,6 @@ void keyboard(unsigned char key, int x, int y) {
   case 'Y': case 'y':
       malha = !malha;
       break;
-      /*
-  // More Light Bulb Red Component
-  case 'Q': {
-      light_bulb_r += 0.5f;
-      break;
-  }
-
-  // Less Light Bulb Red Component
-  case 'z': {
-      light_bulb_r -= 0.5f;
-      break;
-  }
-
-  // More Light Bulb Green Component
-  case 'x': {
-      light_bulb_g += 0.5f;
-      break;
-  }
-
-  // Less Light Bulb Green Component
-  case 'c': {
-      light_bulb_g -= 0.5f;
-      break;
-  }
-
-  // More Light Bulb Blue Component
-  case 'v': {
-      light_bulb_b += 0.5f;
-      break;
-  }
-
-  // Less Light Bulb Blue Component
-  case 'b': {
-      light_bulb_b -= 0.5f;
-      break;
-  }
-
-  // More Light Bulb Intesity
-  case 'n': {
-      light_bulb_intensity += 0.1f;
-      break;
-  }
-
-  // Less Light Bulb Intesity
-  case 'm': {
-      light_bulb_intensity -= 0.1f;
-      break;
-  }*/
 
   case 'i':
       light_bulb_intensity += 0.1;

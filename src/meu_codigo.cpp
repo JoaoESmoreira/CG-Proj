@@ -170,7 +170,7 @@ int material;
 
 bool light_bulb_on;
 GLfloat light_bulb_intensity = 1;
-GLfloat light_bulb_r = 0.5f, light_bulb_g = 0.5f, light_bulb_b = 0.5f;
+GLfloat light_bulb_r, light_bulb_g, light_bulb_b;
 
 GLfloat light_bulb_position[4] = {0.0f, 5.0f, 0.0f, 1.0f};
 GLfloat light_bulb_ambient[4] = {0.0f, -1.0f, 0.0f, 1.0f};
@@ -182,8 +182,8 @@ bool spotlight_on;
 GLfloat spotlight_intensity = 1;
 GLfloat spotlight_r = 0.5, spotlight_g = 0.5, spotlight_b = 0.5;
 
-GLfloat spotlight_position[4] = {0.0f, 5.0f, 0.0f, 1.0f};
-GLfloat spotlight_direction[4] = {0.0f, -1.0f, 0.0f, 0.0f};
+GLfloat spotlight_position[4] = {.0f, 5.0f, .0f, 1.0f};
+GLfloat spotlight_direction[4] = {.0f, -1.0f, .0f, 0.0f};
 
 GLfloat spotlight_ambient[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 GLfloat spotlight_difuse[4] = {spotlight_r, spotlight_g, spotlight_b, 1.0f};
@@ -249,9 +249,9 @@ void update_light(GLenum light) {
             glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spot_cutoff);
             glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spot_exponent);
 
-            glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, spotlight_kc);
-            glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, spotlight_kl);
+            /*glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, spotlight_kl);
             glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, spotlight_kq);
+            glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, spotlight_kc);*/
 
             glDisable(GL_LIGHTING);
             glPushMatrix();
@@ -272,13 +272,39 @@ void update_light(GLenum light) {
     }
 }
 
+GLUquadricObj* esfera = gluNewQuadric();
 
-
+void drawEsfera() {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture[1]);
+    glPushMatrix();
+    //glTranslatef(2, 4, 2);
+    glRotatef(-90, 1, 0, 0);
+    gluQuadricDrawStyle(esfera, GLU_FILL);
+    gluQuadricNormals(esfera, GLU_SMOOTH);
+    gluQuadricTexture(esfera, GL_TRUE);
+    gluSphere(esfera, 60.0, 100, 100);
+    glPopMatrix();
+    glDisable(GL_TEXTURE_2D);
+}
 
 void initTexturas() {
 	glGenTextures(1, &texture[0]);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	imag.LoadBmpFile("textures/pneu.bmp");
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3,
+		imag.GetNumCols(),
+		imag.GetNumRows(), 0, GL_RGB, GL_UNSIGNED_BYTE,
+		imag.ImageData());
+
+	glGenTextures(1, &texture[1]);
+	glBindTexture(GL_TEXTURE_2D, texture[1]);
+	imag.LoadBmpFile("textures/skybox.bmp");
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -398,6 +424,7 @@ void draw() {
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+
 	glViewport(0,0, 300, 300);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -410,6 +437,7 @@ void display(void) {
 	gluLookAt(0,10,0, 0, 0, 0, -1, 0, 0);
 	
 
+	drawEsfera();
 	drawAxis();
 	draw();
   update_light(GL_LIGHT0);
@@ -453,7 +481,6 @@ void init(void) {
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 
-
   xCarTrans = yChimTrans = angWheel = yAngPersonPosition = AngPersonPosition = 0;
   PersonPosition[0] = SIZE * cos(yAngPersonPosition/(2*PI));
   PersonPosition[1] = SIZE * sin(AngPersonPosition/(2*PI));
@@ -464,6 +491,7 @@ void init(void) {
 
 
   light_bulb_on = spotlight_on = false;
+  light_bulb_r = 0.5f, light_bulb_g = 0.5f, light_bulb_b = 0.5f;
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -554,25 +582,25 @@ void keyboard(unsigned char key, int x, int y) {
       break;
 
   case 'R': case 'r':
-      spotlight_r += 0.1;
-      if (spotlight_r > 1.1) {
-	  spotlight_r = 0;
+      light_bulb_r += 0.1;
+      if (light_bulb_r > 1.1) {
+	  light_bulb_r = 0;
       }
-      cout << "red: " << spotlight_r << endl;
+      cout << "red: " << light_bulb_r << endl;
       break;
   case 'G': case 'g':
-      spotlight_g += 0.1;
-      if (spotlight_g > 1.1) {
-	  spotlight_g = 0;
+      light_bulb_g += 0.1;
+      if (light_bulb_g > 1.1) {
+	  light_bulb_g = 0;
       }
-      cout << "green: " << spotlight_g << endl;
+      cout << "green: " << light_bulb_g << endl;
       break;
   case 'B': case 'b':
-      spotlight_b += 0.1;
-      if (spotlight_b > 1.1) {
-	  spotlight_b = 0;
+      light_bulb_b += 0.1;
+      if (light_bulb_b > 1.1) {
+	  light_bulb_b = 0;
       }
-      cout << "blue: " << spotlight_b << endl;
+      cout << "blue: " << light_bulb_b << endl;
       break;
       /*
   // More Light Bulb Red Component

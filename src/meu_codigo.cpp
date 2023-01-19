@@ -292,7 +292,6 @@ void initTexturas() {
 	glGenTextures(1, &texture[0]);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	imag.LoadBmpFile("textures/pneu.bmp");
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -383,6 +382,7 @@ void draw() {
 
 
 
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     // body car
     glPushMatrix();
       glScalef(2, 1.2, 1);
@@ -390,7 +390,6 @@ void draw() {
       glColor4f(ORANGE);
       drawCube();
     glPopMatrix();
-
 
     // initMaterials(10);
     glEnable(GL_TEXTURE_2D);

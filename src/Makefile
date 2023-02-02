@@ -1,20 +1,24 @@
-
 CC = g++
-OBJS = meu_codigo.o RgbImage.o materiais.o
+OBJS = main.o RgbImage.o materiais.o
 FLAG = -lglut -lGLU -lGL
+BINF = car
 
-prog:	run
+prog:		compile
+		@echo "Runing"
+		./${BINF}
+		@echo "End program"
 
 
-run:	${OBJS}
-	${CC} ${OBJS} ${FLAG}
-	./a.out
+compile:	${OBJS}
+		@echo "Compiling"
+		${CC} ${OBJS} ${FLAG} -o ${BINF}
+		@echo "Compile finished"
 
 clean:
-	rm a.out ${OBJS}
+		rm ${OBJS} ${BINF}
 
 zip:
-	zip project.zip *
+		zip project.zip *
 
-%.o:	%.c
-	$(CC) -c $^ $(FLAGS) 
+%.o:		%.c
+		$(CC) -c $^ $(FLAGS) 

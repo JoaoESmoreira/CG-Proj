@@ -1,0 +1,51 @@
+* CG Project
+Project for the Computer Graphics course of the Informatics Engineering Course @University of Coimbra.
+
+* Run
+
+Inside the =src= folder there is a Makefile that helps you to run it the code.
+#+begin_src bash
+  # run the code with:
+  make
+
+  # compile the code with:
+  make compile
+
+  # clean bin and object files with:
+  make clean
+
+#+end_src
+
+* Operations
+
+When you run the project, a window opens and you can do the follows commands:
+
+- =ESC= - exit the window
+  
+- =w / W= - move camera up
+- =s / S= - move camera down
+- =a / A= - rotate camera left
+- =d / D= - rotate camera right
+
+- =1= - move camera to right side
+- =2= - move camera to front side
+- =3= - move camera to left side
+- =4= - move camera to back side
+
+- =m / M= - change material
+- =y / Y= - activate/desactivate mesh points
+  
+
+- =p / P= - activate/desactivate SpotLight
+- =o / O= - activate/desactivate BulbLight
+  
+- =h / H= - move SpotLight to left side
+- =j / J= - move SpotLight to front side
+- =k / K= - move SpotLight to back side
+- =l / L= - move SpotLight to right side
+  
+- =r / R= - change red intensity
+- =g / G= - change green intensity
+- =b / B= - change blue intensity
+  
+- =i= - change blue intensity lights
